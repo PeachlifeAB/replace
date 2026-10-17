@@ -1,0 +1,5 @@
+id: print-to-log
+language: go
+rule:
+  pattern: fmt.Println($A)
+fix: log.Println($A)

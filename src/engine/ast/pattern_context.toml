@@ -1,0 +1,15 @@
+# One row per language whose bare patterns need a surrounding context to parse.
+# `wrap` places the pattern text where `{pattern}` appears; `selector` is the node kind
+# the wrapped pattern matches. `trigger` decides which bare patterns get wrapped.
+
+[[context]]
+language = "go"
+wrap = "package main\nfunc _() {\n{pattern}\n}\n"
+selector = "call_expression"
+trigger = { kind = "contains", text = "(", unless_starts_with = "package" }
+
+[[context]]
+language = "swift"
+wrap = "func _() {\n{pattern}\n}\n"
+selector = "control_transfer_statement"
+trigger = { kind = "bare_rejected" }

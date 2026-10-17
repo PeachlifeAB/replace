@@ -1,0 +1,1 @@
+__RUN_DIR__/main.go:4:2: result of fmt.Errorf call not used

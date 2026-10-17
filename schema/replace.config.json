@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dabvid/replace/schema/replace.config.json",
+  "title": "replace config",
+  "description": "Precedence, highest first: --config-path FILE (read alone), the nearest .replace/config.toml, the global $XDG_CONFIG_HOME/replace/config.toml (else ~/.replace/ on macOS, ~/.config/replace/ elsewhere). A higher key replaces the lower value whole.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "limits": {
+      "$ref": "#/$defs/limits"
+    },
+    "exclude": {
+      "description": "Globs to skip.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "include_hidden": {
+      "description": "Scan hidden files.",
+      "type": "boolean"
+    },
+    "root": {
+      "description": "Directory `replace run` rewrites. Default: current directory.",
+      "type": "string"
+    },
+    "include": {
+      "description": "Only scan files matching these globs.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "apply_immediately": {
+      "description": "`replace run` applies instead of staging.",
+      "type": "boolean"
+    },
+    "hooks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pre_apply": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "post_apply": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "lang_by_glob": {
+      "description": "AST language by glob; first match wins.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "glob",
+          "language"
+        ],
+        "properties": {
+          "glob": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "rules": {
+      "description": "Rules for `replace run`.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "find",
+              "replace"
+            ],
+            "properties": {
+              "type": {
+                "const": "literal"
+              },
+              "find": {
+                "type": "string"
+              },
+              "replace": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "pattern",
+              "replacement"
+            ],
+            "properties": {
+              "type": {
+                "const": "regex"
+              },
+              "pattern": {
+                "type": "string"
+              },
+              "replacement": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "pattern",
+              "replacement"
+            ],
+            "properties": {
+              "type": {
+                "const": "ast"
+              },
+              "language": {
+                "type": "string"
+              },
+              "pattern": {
+                "type": "string"
+              },
+              "replacement": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_file_size": {
+          "description": "Skip larger files. Units: B, KB, KiB, MB, MiB, GB, GiB; bare number is bytes.",
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)? ?([KMGT]i?)?B?$"
+        },
+        "max_files": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_matches": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_matches_per_file": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "lock_timeout": {
+          "description": "Wait for the stage lock this long. Examples: 30s, 5m, 1h; bare number is seconds.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

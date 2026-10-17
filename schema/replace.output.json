@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dabvid/replace/schema/replace.output.json",
+  "title": "replace --json output",
+  "description": "stdout of `--json`: a rewrite prints run_output, `list` and `log` print stage_list, `show ID` prints stage_detail, `explain ID` prints stage_entry, `check` prints check_report. Warnings and notes go to stderr.",
+  "oneOf": [
+    { "$ref": "#/$defs/run_output" },
+    { "$ref": "#/$defs/stage_list" },
+    { "$ref": "#/$defs/stage_detail" },
+    { "$ref": "#/$defs/check_report" }
+  ],
+  "$defs": {
+    "run_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stages", "stats", "warnings"],
+      "properties": {
+        "stages": { "type": "array", "items": { "$ref": "#/$defs/run_stage" } },
+        "stats": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["files", "replacements", "renames"],
+          "properties": {
+            "files": { "type": "integer", "minimum": 0 },
+            "replacements": { "type": "integer", "minimum": 0 },
+            "renames": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "warnings": { "type": "array", "items": { "$ref": "#/$defs/warning" } }
+      }
+    },
+    "run_stage": {
+      "description": "One rewritten file. `applied` tells a staged change from one already written.",
+      "type": "object",
+      "required": ["id", "file", "mode", "pattern", "rewrite", "replacements", "applied"],
+      "properties": {
+        "id": { "$ref": "#/$defs/stage_id" },
+        "file": { "type": "string" },
+        "mode": { "$ref": "#/$defs/mode" },
+        "pattern": { "type": "string" },
+        "rewrite": { "type": "string" },
+        "replacements": { "type": "integer", "minimum": 0 },
+        "applied": { "type": "boolean" },
+        "anchors": { "type": "array", "items": { "type": "string" } },
+        "captures": {},
+        "parent_function": { "type": ["string", "null"] },
+        "parent_class": { "type": ["string", "null"] },
+        "injected_language": { "type": ["string", "null"] },
+        "git_blame_author": { "type": ["string", "null"] }
+      }
+    },
+    "warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "path"],
+      "properties": {
+        "code": {
+          "enum": [
+            "REPLACE_W_SKIPPED_BINARY",
+            "REPLACE_W_SKIPPED_ENCODING",
+            "REPLACE_W_SKIPPED_LARGE_FILE",
+            "REPLACE_W_SKIPPED_SYMLINK",
+            "REPLACE_W_ZERO_MATCHES"
+          ]
+        },
+        "message": { "type": "string" },
+        "path": { "type": ["string", "null"] }
+      }
+    },
+    "stage_list": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/stage_entry" }
+    },
+    "stage_entry": {
+      "description": "A stage as stored under .replace/stage or .replace/history.",
+      "type": "object",
+      "required": [
+        "id", "mode", "pattern", "rewrite", "file", "match_count", "source_sha", "after_sha",
+        "anchors", "command_argv", "cwd", "timestamp"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/stage_id" },
+        "mode": { "$ref": "#/$defs/mode" },
+        "pattern": { "type": "string" },
+        "rewrite": { "type": "string" },
+        "file": { "type": "string" },
+        "match_count": { "type": "integer", "minimum": 0 },
+        "source_sha": { "type": ["string", "null"] },
+        "after_sha": { "type": ["string", "null"] },
+        "anchors": { "type": "array", "items": { "type": "string" } },
+        "command_argv": { "type": "array", "items": { "type": "string" } },
+        "cwd": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "stage_detail": {
+      "description": "`show ID`: a stage record plus its diff.",
+      "allOf": [
+        { "$ref": "#/$defs/stage_entry" },
+        { "type": "object", "required": ["patch"], "properties": { "patch": { "type": "string" } } }
+      ]
+    },
+    "check_report": {
+      "description": "`check`: stages whose file still matches, and those that drifted. Drift exits 5.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clean", "drifted"],
+      "properties": {
+        "clean": { "type": "integer", "minimum": 0 },
+        "drifted": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "file", "reason"],
+            "properties": {
+              "id": { "$ref": "#/$defs/stage_id" },
+              "file": { "type": "string" },
+              "reason": { "enum": ["deleted", "modified"] }
+            }
+          }
+        }
+      }
+    },
+    "stage_id": { "type": "string", "pattern": "^[0-9a-f]{12}(-[0-9]+)?$" },
+    "mode": { "enum": ["ast", "literal", "regex", "fromerror", "renamefile"] }
+  }
+}

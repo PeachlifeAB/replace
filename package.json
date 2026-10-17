@@ -1,0 +1,12 @@
+{
+	"name": "replace",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Find, replace, rename with undo and preview support",
+	"author": "David Aberg",
+	"main": "src/main.rs",
+	"scripts": {
+		"build": "cargo build",
+		"test": "cargo test"
+	}
+}

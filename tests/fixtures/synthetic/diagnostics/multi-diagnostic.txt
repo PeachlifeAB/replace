@@ -1,0 +1,2 @@
+__RUN_DIR__/a.go:1:1: error one
+__RUN_DIR__/b.go:2:1: error two

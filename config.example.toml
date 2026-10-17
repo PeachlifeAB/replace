@@ -1,0 +1,11 @@
+# Schema: schema/replace.config.json
+
+exclude = ["target/**", "node_modules/**"]
+include_hidden = false
+
+[limits]
+max_file_size = "5MiB"
+max_files = 10000
+max_matches = 5000
+max_matches_per_file = 500
+lock_timeout = "30s"

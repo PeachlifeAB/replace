@@ -1,0 +1,7 @@
+id: multi
+language: go
+rule:
+  any:
+    - pattern: fmt.Println($A)
+    - pattern: fmt.Printf($A)
+fix: log.Println($A)

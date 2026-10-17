@@ -1,0 +1,99 @@
+[package]
+name = "replace"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+authors = ["David Aberg"]
+description = "A safe, preview-first structural rewrite tool"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/dabvid/replace"
+homepage = "https://github.com/dabvid/replace"
+readme = "README.md"
+keywords = ["replace", "refactor", "search", "ast", "cli"]
+categories = ["command-line-utilities", "development-tools", "text-processing"]
+
+[[bin]]
+name = "replace"
+path = "src/main.rs"
+
+[dependencies]
+# CLI, config, errors
+clap = { version = "4", features = ["derive", "env"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "1.1"
+thiserror = "2"
+anyhow = "1"
+
+# Paths, timestamps, durations
+camino = { version = "1", features = ["serde1"] }
+path-clean = "1"
+time = { version = "0.3", features = ["formatting", "parsing", "serde"] }
+humantime = "2"
+
+# Traversal, ignore handling, globbing
+ignore = "0.4"
+globset = "0.4"
+
+# Text search and replacement
+grep-searcher = "0.1"
+grep-regex = "0.1"
+grep-matcher = "0.1"
+regex = "1"
+same-file = "1"
+aho-corasick = "1"
+bstr = "1"
+memchr = "2"
+ast-grep-core = "0.51.0"
+ast-grep-language = "0.51.0"
+ast-grep-config = "0.51.0"
+
+# Diff, patch, staging, atomic-ish writes, hashing
+diffy = "0.5.2"
+fs4 = "1.1.0"
+tempfile = "3.27.0"
+sha2 = "0.11.1"
+hex = "0.4.3"
+
+# Rust-native Git integration
+gix = "0.89.0"
+
+# Terminal output
+anstream = "1.0.0"
+owo-colors = "4.4.0"
+terminal-link = "0.1.0"
+
+# Optional embedded scripting replacement for `node --rewriter`
+rhai = { version = "1.26.1", features = ["serde"] }
+bytesize = "2"
+
+[dev-dependencies]
+assert_cmd = "2.2.2"
+assert_fs = "1.1.4"
+predicates = "3.1.4"
+insta = { version = "1.49.0", features = ["json"] }
+pretty_assertions = "1.4.1"
+tempfile = "3.27.0"
+mockall = "0.15.0"
+proptest = "1.12.0"
+filetime = "0.2.29"
+jsonschema = { version = "0.59.0", default-features = false }
+
+[lints.rust]
+warnings = "deny"
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = { level = "deny", priority = 10 }
+pedantic = { level = "deny", priority = -1 }
+nursery = { level = "deny", priority = -1 }
+redundant_clone = { level = "deny", priority = 9 }
+large_enum_variant = { level = "deny", priority = 9 }
+needless_collect = { level = "deny", priority = 9 }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

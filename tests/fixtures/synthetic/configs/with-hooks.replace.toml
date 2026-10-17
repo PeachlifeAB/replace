@@ -1,0 +1,2 @@
+[hooks]
+post_apply = ["printf hook-ran > hook.out"]

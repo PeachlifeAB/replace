@@ -1,0 +1,1 @@
+__RUN_DIR__/broken.go:3:12: tree-sitter: parse error

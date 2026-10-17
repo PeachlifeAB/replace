@@ -1,0 +1,12 @@
+root = "workspace"
+apply_immediately = false
+
+[[rules]]
+type = "literal"
+find = "DOGFOOD_TOKEN"
+replace = "verified"
+
+[[rules]]
+type = "regex"
+pattern = "random-[0-9]+"
+replacement = "random-id"
